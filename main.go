@@ -20,50 +20,79 @@ func main() {
 	f := flag.String("f", "subs.xml", "OPML file of RSS subscriptions to parse")
 	p := flag.String("p", "8080", "port to listen on")
 	t := flag.String("t", "template.html", "html template to use")
+	tz := flag.String("tz", "Asia/Taipei", "timezone for reltime")
 	u := flag.Int64("u", 30, "update interval, minutes")
 	flag.Parse()
 
-	sub, err := NewSub(*f, *t)
+	sub, err := NewSub(*f, *t, *tz)
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	go sub.tick(time.Duration(*u) * time.Minute)
+
 	http.HandleFunc("/", sub.handler)
 	http.ListenAndServe(":"+*p, nil)
 }
 
 type Sub struct {
+	opml string
+	temp string
+	tz   string
 	ol   []OPMLOutline
 	tmpl *template.Template
 	loc  *time.Location
 	feed Feed
 }
 
-func NewSub(f, t string) (*Sub, error) {
-	opml, err := NewOPMLFile(f)
-	if err != nil {
-		return nil, fmt.Errorf("parse OPML %s: %s", f, err)
+func NewSub(f, t, tz string) (*Sub, error) {
+	sub := &Sub{
+		opml: f,
+		temp: t,
+		tz:   tz,
 	}
-	tmpl, err := template.ParseFiles(t)
+	err := sub.parseOPML()
 	if err != nil {
-		return nil, fmt.Errorf("parse template: %s: %s", t, err)
+		return sub, err
 	}
+	err = sub.parseTemplate()
+	if err != nil {
+		return sub, err
+	}
+	err = sub.parseLocation()
+	if err != nil {
+		return sub, err
+	}
+	sub.feed = Feed{
+		Updated: humanTime(time.Now(), sub.loc),
+		Errors:  []error{fmt.Errorf("Please wait for initial load")},
+	}
+	return sub, nil
+}
 
-	l := "Asia/Taipei"
-	loc, err := time.LoadLocation(l)
+func (s *Sub) parseOPML() error {
+	opml, err := NewOPMLFile(s.opml)
 	if err != nil {
-		return nil, fmt.Errorf("load location %s: %s", l, err)
+		return fmt.Errorf("parse OPML %s: %s", s.opml, err)
 	}
-
-	return &Sub{
-		ol:   opml.Body.Outlines,
-		tmpl: tmpl,
-		loc:  loc,
-		feed: Feed{
-			Updated: humanTime(time.Now(), loc),
-			Errors:  []error{fmt.Errorf("Please wait for initial load")},
-		},
-	}, nil
+	s.ol = opml.Body.Outlines
+	return nil
+}
+func (s *Sub) parseTemplate() error {
+	tmpl, err := template.ParseFiles(s.temp)
+	if err != nil {
+		return fmt.Errorf("parse template: %s: %s", s.temp, err)
+	}
+	s.tmpl = tmpl
+	return nil
+}
+func (s *Sub) parseLocation() error {
+	loc, err := time.LoadLocation(s.tz)
+	if err != nil {
+		return fmt.Errorf("load location %s: %s", s.tz, err)
+	}
+	s.loc = loc
+	return nil
 }
 
 func (s *Sub) handler(w http.ResponseWriter, r *http.Request) {
@@ -78,18 +107,35 @@ func (s *Sub) handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Sub) tick(d time.Duration) {
-	s.feed = s.getAll()
+	s.feed = s.getAll(d)
 
 	t := time.NewTicker(d)
 	for range t.C {
-		s.feed = s.getAll()
+		err := s.parseOPML()
+		if err != nil {
+			s.feed = Feed{
+				Updated: humanTime(time.Now(), s.loc),
+				Errors:  []error{fmt.Errorf("Error parsing OPML: %v", err)},
+			}
+			continue
+		}
+		err = s.parseTemplate()
+		if err != nil {
+			s.feed = Feed{
+				Updated: humanTime(time.Now(), s.loc),
+				Errors:  []error{fmt.Errorf("Error parsing html template: %v", err)},
+			}
+			continue
+		}
+		s.feed = s.getAll(d)
 	}
 }
 
-func (s *Sub) getAll() Feed {
+func (s *Sub) getAll(d time.Duration) Feed {
 	log.Println("updating feed")
 	feed := Feed{
-		Updated: humanTime(time.Now(), s.loc),
+		Updated:  humanTime(time.Now(), s.loc),
+		Interval: int(d / time.Minute),
 	}
 	c := make(chan Iterr, 100)
 	for _, o := range s.ol {
@@ -166,9 +212,10 @@ func humanTime(t time.Time, loc *time.Location) string {
 }
 
 type Feed struct {
-	Items   []Item
-	Errors  []error
-	Updated string
+	Items    []Item
+	Errors   []error
+	Updated  string
+	Interval int
 }
 
 func (f Feed) Sort() { sort.Sort(Items(f.Items)) }

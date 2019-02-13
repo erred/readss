@@ -140,7 +140,7 @@
       <p>
         by <span><a href="https://seankhliao.com/">Sean Liao</a></span>
       </p>
-      <p>updated hourly, last update: {{ .Updated }}</p>
+      <p>updated every {{ .Interval }}m, last update: {{ .Updated }}</p>
     </header>
     {{ with .Errors }}
     <section>

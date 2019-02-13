@@ -7,9 +7,18 @@ Simple Server Side RSS reader
 ## usage
 
 ```
-readss [-p 8080] [-f subs.xml] [-t template.html] [-u 30]
+readss [-p 8080] [-f subs.xml] [-t template.html] [-u 30] [-tz Asia/Taipei]
     -p  port
-    -f OPML subscription xml file
-    -t Go html/template to render, passes in a Feed
-    -u update interval, minutes
+    -f  OPML subscription xml file
+    -t  Go html/template to render, passes in a Feed
+    -tz timezone
+    -u  update interval, minutes
 ```
+
+re-reads opml / template every interval (useful if projecting config from k8s configMap)
+
+## Ideas for improvement
+
+- force refress
+- ~~offline~~
+  - just links, you wouldn't be able to read anything anyways
