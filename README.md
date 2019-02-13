@@ -19,6 +19,12 @@ re-reads opml / template every interval (useful if projecting config from k8s co
 
 ## Ideas for improvement
 
-- force refress
+- icon / logo
+- add to homescreen
+- add compression
+- pregen / cache result
+- limit nodes
+- force refresh
+- debug empty fields
 - ~~offline~~
   - just links, you wouldn't be able to read anything anyways
