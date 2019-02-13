@@ -1,9 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,minimum-scale=1,initial-scale=1"
+    />
     <title>
       Readss | Sean Liao
     </title>
+
+    <meta name="description" content="Sean's personal rss reader" />
+    <meta name="theme-color" content="#000000" />
+
+    <link rel="canonical" href="https://readss.seankhliao.com" />
+
+    <link rel="apple-touch-icon" href="https://seankhliao.com/icon-512.png" />
+    <link
+      rel="icon"
+      type="imgae/png"
+      sizes="512x512"
+      href="https://seankhliao.com/icon-512.png"
+    />
+    <link
+      rel="icon"
+      type="imgae/png"
+      sizes="192x192"
+      href="https://seankhliao.com/icon-192.png"
+    />
+    <link
+      rel="icon"
+      type="imgae/png"
+      sizes="64x64"
+      href="https://seankhliao.com/icon-64.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="https://seankhliao.com/icon-32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="https://seankhliao.com/icon-16.png"
+    />
+    <link rel="shortcut icon" href="https://seankhliao.com/icon.ico" />
 
     <style>
       * {
@@ -53,15 +96,19 @@
         margin 0.25em 0;
       }
       a,
-      a:hover,
-      a:visited {
+      a:hover{
         color: inherit;
         font-weight: 700;
         text-decoration: underline;
       }
+
+      a:visited {
+        color: #ccc;
+      }
       header a,
       header a:hover,
       header a:visited {
+        color: inherit;
         text-decoration; none;
       }
       ul {
@@ -89,10 +136,10 @@
   <body>
     <header>
       <h1>Readss</h1>
-      <h2>
-        <span><a href="https://seankhliao.com/">Sean</a></span
-        >'s RSS reader
-      </h2>
+      <h2><span>RSS</span> Reader</h2>
+      <p>
+        by <span><a href="https://seankhliao.com/">Sean Liao</a></span>
+      </p>
       <p>updated hourly, last update: {{ .Updated }}</p>
     </header>
     {{ with .Errors }}
