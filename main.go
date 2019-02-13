@@ -78,6 +78,32 @@ func (s *Sub) parseOPML() error {
 	s.ol = opml.Body.Outlines
 	return nil
 }
+func NewOPMLFile(fn string) (*OPML, error) {
+	f, err := os.Open(fn)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+	return NewOPML(f)
+}
+func NewOPML(r io.Reader) (*OPML, error) {
+	var o = &OPML{}
+	return o, xml.NewDecoder(r).Decode(o)
+}
+
+type OPML struct {
+	Body struct {
+		Outlines []OPMLOutline `xml:"outline"`
+	} `xml:"body"`
+}
+type OPMLOutline struct {
+	Text    string `xml:"text,attr"`
+	Title   string `xml:"title,attr"`
+	Type    string `xml:"type,attr"`
+	XMLURL  string `xml:"xmlUrl,attr"`
+	HTMLURL string `xml:"htmlUrl,attr"`
+}
+
 func (s *Sub) parseTemplate() error {
 	tmpl, err := template.ParseFiles(s.temp)
 	if err != nil {
@@ -241,30 +267,4 @@ type Item struct {
 	Title     string
 	Timestamp time.Time
 	Updated   string
-}
-
-func NewOPMLFile(fn string) (*OPML, error) {
-	f, err := os.Open(fn)
-	if err != nil {
-		return nil, err
-	}
-	defer f.Close()
-	return NewOPML(f)
-}
-func NewOPML(r io.Reader) (*OPML, error) {
-	var o = &OPML{}
-	return o, xml.NewDecoder(r).Decode(o)
-}
-
-type OPML struct {
-	Body struct {
-		Outlines []OPMLOutline `xml:"outline"`
-	} `xml:"body"`
-}
-type OPMLOutline struct {
-	Text    string `xml:"text,attr"`
-	Title   string `xml:"title,attr"`
-	Type    string `xml:"type,attr"`
-	XMLURL  string `xml:"xmlUrl,attr"`
-	HTMLURL string `xml:"htmlUrl,attr"`
 }
