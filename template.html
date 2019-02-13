@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>
+      Readss | Sean Liao
+    </title>
+
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      :root {
+        --black: #000000;
+        --primary: #a06be0;
+        --white: #eceff1;
+        --sans: "Archivo", sans-serif;
+        --serif: "Lora", serif;
+        font-size: 16px;
+      }
+
+      body {
+        align-items: center;
+        background-color: var(--black);
+        color: var(--white);
+        display: flex;
+        flex-flow: column nowrap;
+        font-family: var(--sans);
+        margin: 0;
+        width: 100%;
+      }
+      h1 {
+        font-family: var(--serif);
+        font-size: 5vmin;
+          margin-bottom: 0.25em;
+      }
+      h2 {
+        font-family: var(--sans);
+        font-size: 4vmin;
+          margin: 0;
+      }
+      h3 {
+        font-family: var(--sans);
+        font-size: 1.563em;
+      }
+      h4 {
+        display: inline-block;
+        font-family: var(--serif);
+        font-size: 1.25em;
+        margin: 0;
+      }
+      p {
+        color: #aaa;
+        margin 0.25em 0;
+      }
+      a,
+      a:hover,
+      a:visited {
+        color: inherit;
+        font-weight: 700;
+        text-decoration: underline;
+      }
+      header a,
+      header a:hover,
+      header a:visited {
+        text-decoration; none;
+      }
+      ul {
+        list-style: none none outside;
+        margin-top: 0;
+        padding: 0;
+      }
+      li {
+        padding: 0.25em;
+          margin: 0 2em;
+      }
+      li:before {
+        content: "»";
+        margin: 0 0 0 -2ch;
+      }
+      span {
+        color: var(--primary);
+      }
+      section {
+        color: #c13013;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Readss</h1>
+      <h2>
+        <span><a href="https://seankhliao.com/">Sean</a></span
+        >'s RSS reader
+      </h2>
+      <p>updated hourly, last update: {{ .Updated }}</p>
+    </header>
+    {{ with .Errors }}
+    <section>
+      <h3>Errors:</h3>
+      <ul>
+        {{ range . }}
+        <li>{{ . }}</li>
+        {{ end }}
+      </ul>
+    </section>
+    {{ end }}
+
+    <article>
+      <h3><span>Articles:</span></h3>
+      {{ with .Items }}
+      <ul>
+        {{ range . }}
+        <li>
+          <h4><a href="{{ .Link }}">{{ .Title }}</a></h4>
+          <p><span>{{ .Source }}</span> <em>{{ .Updated }}</em></p>
+        </li>
+        {{ end }}
+      </ul>
+      {{ end }}
+    </article>
+  </body>
+</html>
