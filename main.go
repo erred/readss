@@ -20,13 +20,14 @@ func main() {
 	f := flag.String("f", "subs.xml", "OPML file of RSS subscriptions to parse")
 	p := flag.String("p", "8080", "port to listen on")
 	t := flag.String("t", "template.html", "html template to use")
+	u := flag.Int64("u", 30, "update interval, minutes")
 	flag.Parse()
 
 	sub, err := NewSub(*f, *t)
 	if err != nil {
 		log.Fatal(err)
 	}
-	go sub.tick(1 * time.Hour)
+	go sub.tick(time.Duration(*u) * time.Minute)
 	http.HandleFunc("/", sub.handler)
 	http.ListenAndServe(":"+*p, nil)
 }
@@ -97,12 +98,16 @@ func (s *Sub) getAll() Feed {
 
 	done := len(s.ol)
 	for i := range c {
-		if i.d {
-			if done--; done == 0 {
+		if i.d || i.e != nil {
+			done--
+			if i.e != nil {
+				feed.Errors = append(feed.Errors, i.e)
+			}
+			if done == 0 {
 				break
 			}
 		} else if i.e != nil {
-			feed.Errors = append(feed.Errors, i.e)
+			done--
 		} else {
 			i.i.Updated = humanTime(i.i.Timestamp, s.loc)
 			feed.Items = append(feed.Items, i.i)
