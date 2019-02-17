@@ -205,6 +205,7 @@ func (s *Sub) getAll(d time.Duration) Feed {
 		}
 	}
 	log.Println("updated feed")
+	feed.limit()
 	return feed
 }
 
@@ -255,6 +256,16 @@ type Feed struct {
 }
 
 func (f Feed) Sort() { sort.Sort(Items(f.Items)) }
+
+// limit output to 6 months
+func (f Feed) limit() {
+	for i, v := range f.Items {
+		if time.Now().Sub(v.Timestamp) >= 6*30*24*time.Hour {
+			f.Items = f.Items[:i]
+			return
+		}
+	}
+}
 
 type Items []Item
 
