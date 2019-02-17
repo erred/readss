@@ -61,11 +61,11 @@ func NewSub(f, t, tz string) (*Sub, error) {
 		tz:   tz,
 		buf:  &bytes.Buffer{},
 	}
-	err := sub.parseOPML()
-	if err != nil {
-		return sub, err
-	}
-	err = sub.parseTemplate()
+	// err := sub.parseOPML()
+	// if err != nil {
+	// 	return sub, err
+	// }
+	err := sub.parseTemplate()
 	if err != nil {
 		return sub, err
 	}
@@ -150,7 +150,8 @@ func (s *Sub) handler(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Cache-Control", fmt.Sprintf("max-age=%d", int(d.Seconds())))
 	}
 
-	if r.Header.Get("If-None-Match") == s.etag {
+	if r.Header.Get("If-None-Match") == s.etag && s.etag != "" {
+		// fmt.Println("not modified: ", s.etag)
 		w.WriteHeader(http.StatusNotModified)
 		return
 	}
@@ -162,33 +163,31 @@ func (s *Sub) handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Sub) tick(d time.Duration) {
-	s.feed = s.getAll(d)
+	s.getAll(d)
 
 	t := time.NewTicker(d)
 	for range t.C {
-		err := s.parseOPML()
-		if err != nil {
-			s.feed = Feed{
-				Updated: humanTime(time.Now(), s.loc),
-				Errors:  []error{fmt.Errorf("Error parsing OPML: %v", err)},
-			}
-			continue
-		}
-		err = s.parseTemplate()
-		if err != nil {
-			s.feed = Feed{
-				Updated: humanTime(time.Now(), s.loc),
-				Errors:  []error{fmt.Errorf("Error parsing html template: %v", err)},
-			}
-			continue
-		}
-		s.feed = s.getAll(d)
+		s.getAll(d)
 	}
 }
 
-func (s *Sub) getAll(d time.Duration) Feed {
+func (s *Sub) getAll(d time.Duration) {
+	err := s.parseOPML()
+	if err != nil {
+		s.feed = Feed{
+			Updated: humanTime(time.Now(), s.loc),
+			Errors:  []error{fmt.Errorf("Error parsing OPML: %v", err)},
+		}
+	}
+	err = s.parseTemplate()
+	if err != nil {
+		s.feed = Feed{
+			Updated: humanTime(time.Now(), s.loc),
+			Errors:  []error{fmt.Errorf("Error parsing html template: %v", err)},
+		}
+	}
 	log.Println("updating feed")
-	feed := Feed{
+	s.feed = Feed{
 		Updated:  humanTime(time.Now(), s.loc),
 		Interval: int(d / time.Minute),
 		NextUp:   time.Now().Add(d),
@@ -203,7 +202,7 @@ func (s *Sub) getAll(d time.Duration) Feed {
 		if i.d || i.e != nil {
 			done--
 			if i.e != nil {
-				feed.Errors = append(feed.Errors, i.e)
+				s.feed.Errors = append(s.feed.Errors, i.e)
 			}
 			if done == 0 {
 				break
@@ -212,30 +211,31 @@ func (s *Sub) getAll(d time.Duration) Feed {
 			done--
 		} else {
 			i.i.Updated = humanTime(i.i.Timestamp, s.loc)
-			feed.Items = append(feed.Items, i.i)
+			s.feed.Items = append(s.feed.Items, i.i)
 		}
 	}
 	close(c)
 
-	feed.Sort()
-	if len(feed.Errors) > 0 {
+	s.feed.Sort()
+	if len(s.feed.Errors) > 0 {
 		log.Println("Errors getting feed:")
-		for _, err := range feed.Errors {
+		for _, err := range s.feed.Errors {
 			log.Println(err)
 		}
 	}
-	log.Println("updated feed")
-	feed.limit()
+	log.Println("updated s.feed")
+	s.feed.limit()
 
 	s.buf.Reset()
-	err := s.tmpl.Execute(s.buf, s.feed)
+	err = s.tmpl.Execute(s.buf, s.feed)
 	if err != nil {
 		log.Println("exec: ", err)
 	}
+	// fmt.Print(s.buf.String())
 	et := make([]byte, 8)
 	rand.Read(et)
 	s.etag = base64.StdEncoding.EncodeToString(et)
-	return feed
+	return
 }
 
 func getFeed(title, url string, c chan Iterr) {
