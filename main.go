@@ -143,14 +143,16 @@ func (s *Sub) handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if r.Header.Get("ETag") == s.etag {
-		w.WriteHeader(http.StatusNotModified)
-		return
-	}
+	w.Header().Add("ETag", s.etag)
 	if d := s.feed.NextUp.Sub(time.Now()); d <= 0 {
 		w.Header().Add("Cache-Control", "no-cache")
 	} else {
 		w.Header().Add("Cache-Control", fmt.Sprintf("max-age=%d", int(d.Seconds())))
+	}
+
+	if r.Header.Get("If-None-Match") == s.etag {
+		w.WriteHeader(http.StatusNotModified)
+		return
 	}
 
 	_, err := io.Copy(w, s.buf)
@@ -225,7 +227,11 @@ func (s *Sub) getAll(d time.Duration) Feed {
 	log.Println("updated feed")
 	feed.limit()
 
-	s.tmpl.Execute(s.buf, s.feed)
+	s.buf.Reset()
+	err := s.tmpl.Execute(s.buf, s.feed)
+	if err != nil {
+		log.Println("exec: ", err)
+	}
 	et := make([]byte, 8)
 	rand.Read(et)
 	s.etag = base64.StdEncoding.EncodeToString(et)
