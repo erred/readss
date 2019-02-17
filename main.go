@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"encoding/base64"
 	"encoding/xml"
 	"flag"
 	"fmt"
@@ -51,7 +50,7 @@ type Sub struct {
 	loc  *time.Location
 	feed Feed
 	buf  *bytes.Buffer
-	etag string
+	b    []byte
 }
 
 func NewSub(f, t, tz string) (*Sub, error) {
@@ -82,6 +81,7 @@ func NewSub(f, t, tz string) (*Sub, error) {
 	if err != nil {
 		return nil, err
 	}
+	sub.b = sub.buf.Bytes()
 
 	return sub, nil
 }
@@ -143,22 +143,15 @@ func (s *Sub) handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Header().Add("ETag", s.etag)
 	if d := s.feed.NextUp.Sub(time.Now()); d <= 0 {
 		w.Header().Add("Cache-Control", "no-cache")
 	} else {
 		w.Header().Add("Cache-Control", fmt.Sprintf("max-age=%d", int(d.Seconds())))
 	}
 
-	if r.Header.Get("If-None-Match") == s.etag && s.etag != "" {
-		// fmt.Println("not modified: ", s.etag)
-		w.WriteHeader(http.StatusNotModified)
-		return
-	}
-
-	_, err := io.Copy(w, s.buf)
+	_, err := w.Write(s.b)
 	if err != nil {
-		log.Println("copy template: ", err)
+		log.Println("write: ", err)
 	}
 }
 
@@ -228,13 +221,13 @@ func (s *Sub) getAll(d time.Duration) {
 
 	s.buf.Reset()
 	err = s.tmpl.Execute(s.buf, s.feed)
+	s.b = s.buf.Bytes()
 	if err != nil {
 		log.Println("exec: ", err)
 	}
 	// fmt.Print(s.buf.String())
 	et := make([]byte, 8)
 	rand.Read(et)
-	s.etag = base64.StdEncoding.EncodeToString(et)
 	return
 }
 
