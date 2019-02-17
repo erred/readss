@@ -2,12 +2,14 @@ package main
 
 import (
 	"bytes"
+	"encoding/base64"
 	"encoding/xml"
 	"flag"
 	"fmt"
 	"html/template"
 	"io"
 	"log"
+	"math/rand"
 	"net/http"
 	"os"
 	"sort"
@@ -16,6 +18,10 @@ import (
 
 	"github.com/mmcdole/gofeed"
 )
+
+func init() {
+	rand.Seed(time.Now().UnixNano())
+}
 
 func main() {
 	f := flag.String("f", "subs.xml", "OPML file of RSS subscriptions to parse")
@@ -45,6 +51,7 @@ type Sub struct {
 	loc  *time.Location
 	feed Feed
 	buf  *bytes.Buffer
+	etag string
 }
 
 func NewSub(f, t, tz string) (*Sub, error) {
@@ -69,6 +76,7 @@ func NewSub(f, t, tz string) (*Sub, error) {
 	sub.feed = Feed{
 		Updated: humanTime(time.Now(), sub.loc),
 		Errors:  []error{fmt.Errorf("Please wait for initial load")},
+		NextUp:  time.Now(),
 	}
 	err = sub.tmpl.Execute(sub.buf, sub.feed)
 	if err != nil {
@@ -134,6 +142,17 @@ func (s *Sub) handler(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/", http.StatusFound)
 		return
 	}
+
+	if r.Header.Get("ETag") == s.etag {
+		w.WriteHeader(http.StatusNotModified)
+		return
+	}
+	if d := s.feed.NextUp.Sub(time.Now()); d <= 0 {
+		w.Header().Add("Cache-Control", "no-cache")
+	} else {
+		w.Header().Add("Cache-Control", fmt.Sprintf("max-age=%d", int(d.Seconds())))
+	}
+
 	_, err := io.Copy(w, s.buf)
 	if err != nil {
 		log.Println("copy template: ", err)
@@ -142,7 +161,6 @@ func (s *Sub) handler(w http.ResponseWriter, r *http.Request) {
 
 func (s *Sub) tick(d time.Duration) {
 	s.feed = s.getAll(d)
-	s.tmpl.Execute(s.buf, s.feed)
 
 	t := time.NewTicker(d)
 	for range t.C {
@@ -163,7 +181,6 @@ func (s *Sub) tick(d time.Duration) {
 			continue
 		}
 		s.feed = s.getAll(d)
-		s.tmpl.Execute(s.buf, s.feed)
 	}
 }
 
@@ -172,6 +189,7 @@ func (s *Sub) getAll(d time.Duration) Feed {
 	feed := Feed{
 		Updated:  humanTime(time.Now(), s.loc),
 		Interval: int(d / time.Minute),
+		NextUp:   time.Now().Add(d),
 	}
 	c := make(chan Iterr, 100)
 	for _, o := range s.ol {
@@ -206,6 +224,11 @@ func (s *Sub) getAll(d time.Duration) Feed {
 	}
 	log.Println("updated feed")
 	feed.limit()
+
+	s.tmpl.Execute(s.buf, s.feed)
+	et := make([]byte, 8)
+	rand.Read(et)
+	s.etag = base64.StdEncoding.EncodeToString(et)
 	return feed
 }
 
@@ -245,6 +268,9 @@ func humanTime(t time.Time, loc *time.Location) string {
 	default:
 		ago = strconv.FormatInt(d.Nanoseconds()/int64(24*time.Hour), 10) + "d ago"
 	}
+	if ago == "0m ago" {
+		ago = ""
+	}
 	return t.In(loc).Format("2006-01-02 15:04 ") + ago
 }
 
@@ -252,6 +278,7 @@ type Feed struct {
 	Items    []Item
 	Errors   []error
 	Updated  string
+	NextUp   time.Time
 	Interval int
 }
 

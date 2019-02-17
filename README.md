@@ -20,16 +20,16 @@ re-reads opml / template every interval (useful if projecting config from k8s co
 
 ## TODO
 
-- icon / logo
-- consistent branding: ReadSS
-- add to homescreen
-- add compression
-- pregen / cache result
-- limit nodes
-- force refresh
-- debug empty fields
-- cache control headers
-- fix time ago
-- fix mobile spacing
-- ~~offline~~
+- [ ] icon / logo
+- [x] consistent branding: ReadSS
+- [ ] add to homescreen
+- [ ] add compression
+- [x] pregen / cache result
+- [x] limit nodes
+- [ ] force refresh
+- [ ] debug empty fields
+- [x] cache control headers
+- [x] fix time ago
+- [x] fix mobile spacing
+- [ ] ~~offline~~
   - just links, you wouldn't be able to read anything anyways
