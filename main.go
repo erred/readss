@@ -281,10 +281,10 @@ type Feed struct {
 	Interval int
 }
 
-func (f Feed) Sort() { sort.Sort(Items(f.Items)) }
+func (f *Feed) Sort() { sort.Sort(Items(f.Items)) }
 
 // limit output to 6 months
-func (f Feed) limit() {
+func (f *Feed) limit() {
 	for i, v := range f.Items {
 		if time.Now().Sub(v.Timestamp) >= 6*30*24*time.Hour {
 			f.Items = f.Items[:i]
