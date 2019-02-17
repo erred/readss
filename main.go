@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/xml"
 	"flag"
 	"fmt"
@@ -43,6 +44,7 @@ type Sub struct {
 	tmpl *template.Template
 	loc  *time.Location
 	feed Feed
+	buf  *bytes.Buffer
 }
 
 func NewSub(f, t, tz string) (*Sub, error) {
@@ -50,6 +52,7 @@ func NewSub(f, t, tz string) (*Sub, error) {
 		opml: f,
 		temp: t,
 		tz:   tz,
+		buf:  &bytes.Buffer{},
 	}
 	err := sub.parseOPML()
 	if err != nil {
@@ -67,6 +70,11 @@ func NewSub(f, t, tz string) (*Sub, error) {
 		Updated: humanTime(time.Now(), sub.loc),
 		Errors:  []error{fmt.Errorf("Please wait for initial load")},
 	}
+	err = sub.tmpl.Execute(sub.buf, sub.feed)
+	if err != nil {
+		return nil, err
+	}
+
 	return sub, nil
 }
 
@@ -126,14 +134,15 @@ func (s *Sub) handler(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/", http.StatusFound)
 		return
 	}
-	err := s.tmpl.Execute(w, s.feed)
+	_, err := io.Copy(w, s.buf)
 	if err != nil {
-		log.Println("exec template: ", err)
+		log.Println("copy template: ", err)
 	}
 }
 
 func (s *Sub) tick(d time.Duration) {
 	s.feed = s.getAll(d)
+	s.tmpl.Execute(s.buf, s.feed)
 
 	t := time.NewTicker(d)
 	for range t.C {
@@ -154,6 +163,7 @@ func (s *Sub) tick(d time.Duration) {
 			continue
 		}
 		s.feed = s.getAll(d)
+		s.tmpl.Execute(s.buf, s.feed)
 	}
 }
 
