@@ -17,10 +17,6 @@ Re-reads OPML / template every update, (live update)
 
 - go
 
-or
-
-- docker
-
 #### Install
 
 go:
@@ -40,10 +36,28 @@ readss [-p 8080] [-f subs.xml] [-t template.html] [-u 30] [-tz Asia/Taipei]
     -u  update interval, minutes
 ```
 
+docker:
+
+```sh
+docker run --rm \
+  -p 8080:8080 \
+  seankhliao/readss
+```
+
 #### Build
+
+go:
 
 ```sh
 go build
+```
+
+docker:
+
+```sh
+docker build \
+  --network host \
+  .
 ```
 
 ## Todo
