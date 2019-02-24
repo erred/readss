@@ -12,7 +12,7 @@ WORKDIR /app
 COPY --from=build /app/readss .
 COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=build /usr/share/zoneinfo /usr/share/zoneinfo
-COPY subs.xml template.html ./
+COPY subs.xml template.html manifest.json sw.js ./
 
 EXPOSE 8080/tcp
 ENTRYPOINT ["/app/readss"]

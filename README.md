@@ -11,6 +11,8 @@ I just wanted a constantly updated list of links to blog posts
 
 Re-reads OPML / template every update, (live update)
 
+SW / PWA for nice add to homescreen (not really offline)
+
 ## Usage
 
 #### Prerequisites

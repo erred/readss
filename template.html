@@ -2,10 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width,minimum-scale=1,initial-scale=1"
-    />
+    <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1" />
     <title>
       ReadSS | Sean Liao
     </title>
@@ -14,38 +11,14 @@
     <meta name="theme-color" content="#000000" />
 
     <link rel="canonical" href="https://readss.seankhliao.com" />
+    <link rel="manifest" href="/manifest.json" />
 
     <link rel="apple-touch-icon" href="https://seankhliao.com/icon-512.png" />
-    <link
-      rel="icon"
-      type="imgae/png"
-      sizes="512x512"
-      href="https://seankhliao.com/icon-512.png"
-    />
-    <link
-      rel="icon"
-      type="imgae/png"
-      sizes="192x192"
-      href="https://seankhliao.com/icon-192.png"
-    />
-    <link
-      rel="icon"
-      type="imgae/png"
-      sizes="64x64"
-      href="https://seankhliao.com/icon-64.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="32x32"
-      href="https://seankhliao.com/icon-32.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="16x16"
-      href="https://seankhliao.com/icon-16.png"
-    />
+    <link rel="icon" type="imgae/png" sizes="512x512" href="https://seankhliao.com/icon-512.png" />
+    <link rel="icon" type="imgae/png" sizes="192x192" href="https://seankhliao.com/icon-192.png" />
+    <link rel="icon" type="imgae/png" sizes="64x64" href="https://seankhliao.com/icon-64.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="https://seankhliao.com/icon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="https://seankhliao.com/icon-16.png" />
     <link rel="shortcut icon" href="https://seankhliao.com/icon.ico" />
 
     <style>
@@ -135,6 +108,13 @@
         width: 100%;
       }
     </style>
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", function() {
+          navigator.serviceWorker.register("/sw.js");
+        });
+      }
+    </script>
   </head>
   <body>
     <header>

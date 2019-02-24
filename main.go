@@ -37,6 +37,12 @@ func main() {
 
 	go sub.tick(time.Duration(*u) * time.Minute)
 
+	http.HandleFunc("/manifest.json", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "manifest.json")
+	})
+	http.HandleFunc("/sw.js", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "sw.js")
+	})
 	http.HandleFunc("/", sub.handler)
 	http.ListenAndServe(":"+*p, nil)
 }
