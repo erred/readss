@@ -42,7 +42,7 @@ docker:
 
 ```sh
 docker run --rm \
-  -p 8080:8080 \
+  --network host \
   seankhliao/readss
 ```
 

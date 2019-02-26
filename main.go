@@ -11,6 +11,7 @@ import (
 	"math/rand"
 	"net/http"
 	"os"
+	"path"
 	"sort"
 	"strconv"
 	"time"
@@ -37,12 +38,6 @@ func main() {
 
 	go sub.tick(time.Duration(*u) * time.Minute)
 
-	http.HandleFunc("/manifest.json", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "manifest.json")
-	})
-	http.HandleFunc("/sw.js", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "sw.js")
-	})
 	http.HandleFunc("/", sub.handler)
 	http.ListenAndServe(":"+*p, nil)
 }
@@ -145,7 +140,7 @@ func (s *Sub) parseLocation() error {
 
 func (s *Sub) handler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
-		http.Redirect(w, r, "/", http.StatusFound)
+		http.ServeFile(w, r, path.Base(r.URL.Path))
 		return
 	}
 
