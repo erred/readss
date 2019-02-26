@@ -1,4 +1,4 @@
-# ![logo](static/icon-32.png) ReadSS
+# ![logo](static/icon-64.png) ReadSS
 
 Server side RSS link aggregator
 
