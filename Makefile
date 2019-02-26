@@ -13,9 +13,13 @@ run:
 test:
 	go test
 
+.PHONY: redeploy
+redeploy:
+	kubectl delete po -l app=readss
+
 .PHONY: white-icon
 white-icon:
-	convert -background none -density 1200 -resize 2100x1350 \
+	convert -background black -density 1200 \
 		logo-white.svg \
 		\( +clone -resize 512x512 -quality 60 -write static/icon-512.png +delete \) \
 		\( +clone -resize 192x192 -quality 60 -write static/icon-192.png +delete \) \
