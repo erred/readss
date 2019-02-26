@@ -17,17 +17,15 @@ SW / PWA for nice add to homescreen (not really offline)
 
 #### Prerequisites
 
-- go
-
-#### Install
-
-go:
-
-```sh
-go get github.com/seankhliao/readss
-```
+- docker
 
 #### Run
+
+docker:
+
+```sh
+make run
+```
 
 ```sh
 readss [-p 8080] [-f subs.xml] [-t template.html] [-u 30] [-tz Asia/Taipei]
@@ -38,28 +36,10 @@ readss [-p 8080] [-f subs.xml] [-t template.html] [-u 30] [-tz Asia/Taipei]
     -u  update interval, minutes
 ```
 
-docker:
-
-```sh
-docker run --rm \
-  --network host \
-  seankhliao/readss
-```
-
 #### Build
 
-go:
-
 ```sh
-go build
-```
-
-docker:
-
-```sh
-docker build \
-  --network host \
-  .
+make build
 ```
 
 ## Todo
