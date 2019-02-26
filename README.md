@@ -44,10 +44,10 @@ make build
 
 ## Todo
 
-- [ ] icon / logo
-- [ ] add to homescreen
 - [ ] add compression
 - [ ] force refresh
+- [x] icon / logo
+- [x] add to homescreen
 - [x] consistent branding: ReadSS
 - [x] pregen / cache result
 - [x] limit nodes
