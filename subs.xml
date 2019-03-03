@@ -15,7 +15,6 @@
     <outline text="Project Zero" title="Project Zero" type="rss" xmlUrl="http://googleprojectzero.blogspot.com/feeds/posts/default" htmlUrl="http://googleprojectzero.blogspot.com/"/>
     <outline text="The Go Programming Language Blog" title="The Go Programming Language Blog" type="rss" xmlUrl="http://blog.golang.org/feeds/posts/default" htmlUrl="http://blog.golang.org/feeds/posts/default"/>
     <outline text="CloudFlare" title="CloudFlare" type="rss" xmlUrl="https://blog.cloudflare.com/rss/" htmlUrl="http://blog.cloudflare.com/"/>
-    <outline text="Sysdig Blog" title="Sysdig Blog" type="rss" xmlURL="https://sysdig.com/blog/feed/" htmlUrl="http://sysdig.com/blog"/>
     <outline text="Instagram Engineering" title="Instagram Engineering" type="rss" xmlUrl="http://instagram-engineering.tumblr.com/rss" htmlUrl="http://instagram-engineering.tumblr.com/"/>
     <outline text="GitHub Engineering" title="GitHub Engineering" type="rss" xmlUrl="http://githubengineering.com/atom.xml" htmlUrl="http://githubengineering.com/"/>
     <outline text="Airbnb Engineering" title="Airbnb Engineering" type="rss" xmlUrl="https://medium.com/feed/airbnb-engineering" htmlUrl="https://medium.com/airbnb-engineering"/>
