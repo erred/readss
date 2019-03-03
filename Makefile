@@ -17,10 +17,10 @@ test:
 redeploy:
 	kubectl delete po -l app=readss
 
-.PHONY: white-icon
-white-icon:
+.PHONY: icon
+icon:
 	convert -background black -density 1200 \
-		logo-white.svg \
+		logo.svg \
 		\( +clone -resize 512x512 -quality 60 -write static/icon-512.png +delete \) \
 		\( +clone -resize 192x192 -quality 60 -write static/icon-192.png +delete \) \
 		\( +clone -resize 64x64 -quality 60 -write static/icon-64.png +delete \) \
