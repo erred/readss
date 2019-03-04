@@ -65,7 +65,7 @@ header {
 
     <article>
       <h5>Articles</h5>
-      <p><span>Last updated: <date>{{ .Updated }}</date></span></p>
+      <p><span>Last updated: <em><date>{{ .Updated }}</date></em></span></p>
       {{ with .Items }}
       <dl>
         {{ range . }}
