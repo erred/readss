@@ -41,15 +41,15 @@ header {
       <h1><a href="https://seankhliao.com/">E</a></h1>
       <h1><a href="https://seankhliao.com/">A</a></h1>
       <h1><a href="https://seankhliao.com/">N</a></h1>
-      <h2><a href="https://seankhliao.com/"><span>K</span></a></h2>
-      <h2><a href="https://seankhliao.com/"><span>.</span></a></h2>
-      <h2><a href="https://seankhliao.com/"><span>H</span></a></h2>
-      <h2><a href="https://seankhliao.com/"><span>.</span></a></h2>
+      <h2><a href="https://seankhliao.com/"><mark>K</mark></a></h2>
+      <h2><a href="https://seankhliao.com/"><mark>.</mark></a></h2>
+      <h2><a href="https://seankhliao.com/"><mark>H</mark></a></h2>
+      <h2><a href="https://seankhliao.com/"><mark>.</mark></a></h2>
       <h2><a href="https://seankhliao.com/">L</a></h2>
       <h2><a href="https://seankhliao.com/">I</a></h2>
       <h2><a href="https://seankhliao.com/">A</a></h2>
       <h2><a href="https://seankhliao.com/">O</a></h2>
-      <h3>ReadSS rss reader</h3>
+      <h3><mark>ReadSS</mark> rss reader</h3>
     </header>
 
     {{ with .Errors }}
@@ -65,12 +65,12 @@ header {
 
     <article>
       <h5>Articles</h5>
-      <p>Last updated: <date>{{ .Updated }}</date></p>
+      <p><span>Last updated: <date>{{ .Updated }}</date></span></p>
       {{ with .Items }}
       <dl>
         {{ range . }}
         <dt><a href="{{ .Link }}">{{ .Title }}</a></dt>
-        <dd><span>{{ .Source }}</span> <date>{{ .Updated }}</date></dd>
+        <dd><mark>{{ .Source }}</mark> <span><date>{{ .Updated }}</date></span></dd>
         {{ end }}
       </dl>
       {{ end }}
