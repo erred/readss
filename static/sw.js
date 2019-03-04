@@ -1,15 +1,14 @@
 "use strict";
 
-const cacheName = "cache-1";
-const toCache = ["base.css"];
+const cacheName = "cache-2";
 
-this.addEventListener("install", event => {
-  event.waitUntil(
-    caches.open(cacheName).then(cache => {
-      return cache.addAll(toCache);
-    })
-  );
-});
+// this.addEventListener("install", event => {
+//   event.waitUntil(
+//     caches.open(cacheName).then(cache => {
+//       return cache.addAll(toCache);
+//     })
+//   );
+// });
 
 self.addEventListener("fetch", e => {
   let update = true;
