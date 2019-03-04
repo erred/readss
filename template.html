@@ -3,7 +3,13 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1" />
-    <link rel="preload" href="https://seankhliao.com/base.css" as="style" />
+    <link rel="preload" as="style" crossorigin="anonymous" href="https://seankhliao.com/base.css" />
+    <link
+      rel="preload"
+      as="style"
+      crossorigin="anonymous"
+      href="https://fonts.googleapis.com/css?family=Archivo:400,400i|Lora:700"
+    />
 
     <title>ReadSS | Sean Liao</title>
 
@@ -29,22 +35,30 @@
           navigator.serviceWorker.register("./sw.js");
         });
     </script>
-<style>
-header {
-  height: 30vh;
-}
-</style>
+    <style>
+      header {
+        height: 30vh;
+      }
+    </style>
   </head>
   <body>
     <header>
-      <h1><a href="https://seankhliao.com/">S</h1>
+      <h1><a href="https://seankhliao.com/">S</a></h1>
       <h1><a href="https://seankhliao.com/">E</a></h1>
       <h1><a href="https://seankhliao.com/">A</a></h1>
       <h1><a href="https://seankhliao.com/">N</a></h1>
-      <h2><a href="https://seankhliao.com/"><mark>K</mark></a></h2>
-      <h2><a href="https://seankhliao.com/"><mark>.</mark></a></h2>
-      <h2><a href="https://seankhliao.com/"><mark>H</mark></a></h2>
-      <h2><a href="https://seankhliao.com/"><mark>.</mark></a></h2>
+      <h2>
+        <a href="https://seankhliao.com/"><mark>K</mark></a>
+      </h2>
+      <h2>
+        <a href="https://seankhliao.com/"><mark>.</mark></a>
+      </h2>
+      <h2>
+        <a href="https://seankhliao.com/"><mark>H</mark></a>
+      </h2>
+      <h2>
+        <a href="https://seankhliao.com/"><mark>.</mark></a>
+      </h2>
       <h2><a href="https://seankhliao.com/">L</a></h2>
       <h2><a href="https://seankhliao.com/">I</a></h2>
       <h2><a href="https://seankhliao.com/">A</a></h2>
@@ -65,12 +79,18 @@ header {
 
     <article>
       <h5>Articles</h5>
-      <p><span>Last updated: <em><date>{{ .Updated }}</date></em></span></p>
+      <p>
+        <span
+          >Last updated: <em><date>{{ .Updated }}</date></em></span
+        >
+      </p>
       {{ with .Items }}
       <dl>
         {{ range . }}
         <dt><a href="{{ .Link }}">{{ .Title }}</a></dt>
-        <dd><mark>{{ .Source }}</mark> <span><date>{{ .Updated }}</date></span></dd>
+        <dd>
+          <mark>{{ .Source }}</mark> <span><date>{{ .Updated }}</date></span>
+        </dd>
         {{ end }}
       </dl>
       {{ end }}

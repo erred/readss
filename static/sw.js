@@ -1,14 +1,15 @@
 "use strict";
 
 const cacheName = "cache-2";
+const toCache = ["/"];
 
-// this.addEventListener("install", event => {
-//   event.waitUntil(
-//     caches.open(cacheName).then(cache => {
-//       return cache.addAll(toCache);
-//     })
-//   );
-// });
+this.addEventListener("install", event => {
+  event.waitUntil(
+    caches.open(cacheName).then(cache => {
+      return cache.addAll(toCache);
+    })
+  );
+});
 
 self.addEventListener("fetch", e => {
   let update = true;
