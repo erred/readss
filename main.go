@@ -284,14 +284,17 @@ type Feed struct {
 
 func (f *Feed) Sort() { sort.Sort(Items(f.Items)) }
 
-// limit output to 6 months
+// limit output 100
 func (f *Feed) limit() {
-	for i, v := range f.Items {
-		if time.Now().Sub(v.Timestamp) >= 6*30*24*time.Hour {
-			f.Items = f.Items[:i]
-			return
-		}
+	if len(f.Items) > 100 {
+		f.Items = f.Items[:100]
 	}
+	// for i, v := range f.Items {
+	// 	if time.Now().Sub(v.Timestamp) >= 6*30*24*time.Hour {
+	// 		f.Items = f.Items[:i]
+	// 		return
+	// 	}
+	// }
 }
 
 type Items []Item
