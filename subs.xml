@@ -16,7 +16,7 @@
     <outline text="The Go Programming Language Blog" title="The Go Programming Language Blog" type="rss" xmlUrl="http://blog.golang.org/feeds/posts/default" htmlUrl="http://blog.golang.org/feeds/posts/default"/>
     <outline text="CloudFlare" title="CloudFlare" type="rss" xmlUrl="https://blog.cloudflare.com/rss/" htmlUrl="http://blog.cloudflare.com/"/>
     <outline text="Instagram Engineering" title="Instagram Engineering" type="rss" xmlUrl="http://instagram-engineering.tumblr.com/rss" htmlUrl="http://instagram-engineering.tumblr.com/"/>
-    <outline text="GitHub Engineering" title="GitHub Engineering" type="rss" xmlUrl="http://githubengineering.com/atom.xml" htmlUrl="http://githubengineering.com/"/>
+    <outline text="GitHub Engineering" title="GitHub Engineering" type="rss" xmlUrl="https://github.blog/engineering.atom" htmlUrl="https://github.blog/category/engineering/"/>
     <outline text="Airbnb Engineering" title="Airbnb Engineering" type="rss" xmlUrl="https://medium.com/feed/airbnb-engineering" htmlUrl="https://medium.com/airbnb-engineering"/>
     <outline text="Medium Engineering — Medium" title="Medium Engineering — Medium" type="rss" xmlUrl="https://medium.com/feed/medium-eng" htmlUrl="https://medium.com/medium-eng"/>
     <outline text="Spotify Labs" title="Spotify Labs" type="rss" xmlUrl="https://labs.spotify.com/feed/" htmlUrl="https://labs.spotify.com/"/>
