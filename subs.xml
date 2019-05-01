@@ -26,6 +26,7 @@
     <outline text="turnoff.us" title="turnoff.us" type="rss" xmlUrl="http://turnoff.us/feed.xml" htmlUrl="http://turnoff.us/"/>
     <outline text="What If?" title="What If?" type="rss" xmlUrl="http://what-if.xkcd.com/feed.atom" htmlUrl="http://what-if.xkcd.com/feed.atom"/>
     <outline text="xkcd.com" title="xkcd.com" type="rss" xmlUrl="http://xkcd.com/rss.xml" htmlUrl="http://xkcd.com/"/>
+    <outline text="FaaS and Furious" title="FaaS and Furious" type="rss" xmlUrl="https://faasandfurious.com/feed.xml" htmlUrl="https://faasandfurious.com/"/>
     <outline text="Azeria-Labs" title="Azeria-Labs" type="rss" xmlUrl="https://azeria-labs.com/feed/" htmlUrl="https://azeria-labs.com/"/>
     <outline text="Dave Cheney" title="Dave Cheney" type="rss" xmlUrl="http://dave.cheney.net/feed" htmlUrl="http://dave.cheney.net/"/>
     <outline text="Drew DeVault's Blog" title="Drew DeVault's Blog" type="rss" xmlUrl="https://drewdevault.com/feed.xml" htmlUrl="https://drewdevault.com/"/>
