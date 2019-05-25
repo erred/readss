@@ -4,11 +4,9 @@
     <title>Sean Liao</title>
   </head>
   <body>
-    <outline text="The Keyword" title="The Keyword" type="rss" xmlUrl="https://blog.google/rss/" htmlUrl="https://blog.google/"/>
     <outline text="Google Online Security Blog" title="Google Online Security Blog" type="rss" xmlUrl="http://googleonlinesecurity.blogspot.com/atom.xml" htmlUrl="http://googleonlinesecurity.blogspot.com/"/>
     <outline text="Google Cloud Platform Blog" title="Google Cloud Platform Blog" type="rss" xmlUrl="http://googleappengine.blogspot.com/atom.xml" htmlUrl="http://googlecloudplatform.blogspot.com/"/>
     <outline text="Google Open Source Blog" title="Google Open Source Blog" type="rss" xmlUrl="http://feeds.feedburner.com/GoogleOpenSourceBlog" htmlUrl="http://google-opensource.blogspot.com/"/>
-    <outline text="Google Travel" title="Google Travel" type="rss" xmlUrl="http://feeds.feedburner.com/ItaSoftwareBlog" htmlUrl="http://googletravel.blogspot.com/"/>
     <outline text="Google AI Blog" title="Google AI Blog" type="rss" xmlUrl="http://googleaiblog.blogspot.com/atom.xml" htmlUrl="http://ai.googleblog.com/"/>
     <outline text="The Firebase Blog" title="The Firebase Blog" type="rss" xmlUrl="http://firebase.googleblog.com/feeds/posts/default" htmlUrl="http://firebase.googleblog.com/"/>
     <outline text="Chromium Blog" title="Chromium Blog" type="rss" xmlUrl="http://blog.chromium.org/feeds/posts/default" htmlUrl="http://blog.chromium.org/"/>
