@@ -39,7 +39,8 @@ func main() {
 	h := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Headers", "origin, content-type, x-grpc-web, x-user-agent")
 		w.Header().Set("Access-Control-Allow-Methods", "OPTIONS, POST")
-		w.Header().Set("Access-Control-Allow-Origin", "https://seankhliao.com, http://localhost:8080")
+		// only a single origin is allowed
+		w.Header().Set("Access-Control-Allow-Origin", "https://seankhliao.com")
 		if r.Method == "OPTIONS" {
 			w.WriteHeader(http.StatusOK)
 			return
