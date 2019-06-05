@@ -1,0 +1,11 @@
+steps:
+  - id: test
+    name: "golang"
+    entrypoint: "go"
+    args:
+      - "test"
+  - id: build
+    name: "golang"
+    entrypoint: "go"
+    args:
+      - "build"
