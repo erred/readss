@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package readss;
+
+service Lister {
+  rpc List(ListRequest) returns (ListReply);
+}
+
+message ListRequest{
+
+}
+
+message ListReply {
+  repeated Article articles = 1;
+}
+
+message Article {
+  string title = 1;
+  string url = 2;
+  string source = 3;
+  string time = 4;
+  string reltime = 5;
+}
