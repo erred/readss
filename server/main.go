@@ -5,7 +5,6 @@ import (
 	"encoding/csv"
 	"log"
 	"net/http"
-	"net/http/httputil"
 	"os"
 	"sort"
 	"strconv"
@@ -38,9 +37,6 @@ func main() {
 	//    method: OPTIONS
 	//    response: 200
 	h := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		b, _ := httputil.DumpRequest(r, true)
-		log.Println(string(b))
-
 		w.Header().Set("Access-Control-Allow-Headers", "origin, content-type, x-grpc-web, x-user-agent")
 		w.Header().Set("Access-Control-Allow-Methods", "OPTIONS, POST")
 		w.Header().Set("Access-Control-Allow-Origin", "https://seankhliao.com, http://localhost:8080")
