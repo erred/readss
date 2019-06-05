@@ -8,5 +8,6 @@ RUN GO111MODULE=on CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
 FROM scratch
 
 COPY --from=build /app/readss-server /bin/readss-server
+COPY subs.csv .
 
 ENTRYPOINT ["/bin/readss-server"]

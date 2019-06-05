@@ -2,10 +2,17 @@ package main
 
 import (
 	"context"
+	"encoding/csv"
 	"log"
 	"net/http"
 	"net/http/httputil"
+	"os"
+	"sort"
+	"strconv"
+	"sync"
+	"time"
 
+	"github.com/mmcdole/gofeed"
 	grpcweb "github.com/seankhliao/go-grpcweb"
 	"google.golang.org/grpc"
 
@@ -13,11 +20,14 @@ import (
 )
 
 func main() {
-	svr := grpc.NewServer()
-	pb.RegisterListerServer(svr, &Server{})
+	svr := NewServer("subs.csv", 30*time.Minute)
+	gsvr := grpc.NewServer()
+
+	// register svr with gsvr
+	pb.RegisterListerServer(gsvr, svr)
 
 	// wrap grpc handler in grpc-web handler
-	handler := grpcweb.New(svr)
+	handler := grpcweb.New(gsvr)
 
 	// OPTIONAL:
 	// handle cors if necessary:
@@ -45,25 +55,124 @@ func main() {
 }
 
 type Server struct {
+	ats  []*pb.Article
+	fn   string
+	tick time.Duration
+}
+
+func NewServer(fn string, tick time.Duration) *Server {
+	svr := &Server{
+		fn:   fn,
+		tick: tick,
+	}
+	go svr.updater()
+	return svr
 }
 
 func (s *Server) List(context.Context, *pb.ListRequest) (*pb.ListReply, error) {
 	return &pb.ListReply{
-		Articles: []*pb.Article{
-			&pb.Article{
-				Title:   "this is title 1",
-				Url:     "https://google.com",
-				Source:  "Google",
-				Time:    "2000-01-01",
-				Reltime: "19y ago",
-			},
-			&pb.Article{
-				Title:   "this is title 2",
-				Url:     "https://ibm.com",
-				Source:  "IBM",
-				Time:    "1999-01-01",
-				Reltime: "20y ago",
-			},
-		},
+		Articles: s.ats,
 	}, nil
 }
+
+func (s *Server) updater() {
+	s.ats = getArticles(parseSubs(s.fn))
+	for range time.NewTicker(s.tick).C {
+		s.ats = getArticles(parseSubs(s.fn))
+	}
+}
+
+type Sub struct {
+	Name     string
+	URL      string
+	Articles []*pb.Article
+}
+
+func parseSubs(fn string) []Sub {
+	f, err := os.Open(fn)
+	if err != nil {
+		log.Printf("parseSubs open %v: %v\n", fn, err)
+		return nil
+	}
+	defer f.Close()
+
+	rr, err := csv.NewReader(f).ReadAll()
+	if err != nil {
+		log.Printf("parseSubs readall %v\n", err)
+		return nil
+	}
+
+	subs := make([]Sub, len(rr))
+	for i := range subs {
+		subs[i] = Sub{
+			Name: rr[i][0],
+			URL:  rr[i][1],
+		}
+	}
+	return subs
+}
+
+func getArticles(subs []Sub) []*pb.Article {
+	var wg sync.WaitGroup
+	for i, _ := range subs {
+		wg.Add(1)
+		go func(i int) {
+			defer wg.Done()
+
+			feed, err := gofeed.NewParser().ParseURL(subs[i].URL)
+			if err != nil {
+				log.Printf("getSubs get feed %v: %v\n", subs[i].Name, err)
+				return
+			}
+			ats := make([]*pb.Article, len(feed.Items))
+			for i, it := range feed.Items {
+				ts := it.PublishedParsed
+				if it.UpdatedParsed != nil {
+					ts = it.UpdatedParsed
+				}
+				ats[i] = &pb.Article{
+					Title:   it.Title,
+					Url:     it.Link,
+					Source:  subs[i].Name,
+					Time:    ts.Format("2006-01-02 15:04"),
+					Reltime: humanTime(*ts),
+				}
+			}
+
+			subs[i].Articles = ats
+		}(i)
+	}
+	wg.Wait()
+
+	var ats []*pb.Article
+	for _, s := range subs {
+		ats = append(ats, s.Articles...)
+	}
+	sort.Sort(Articles(ats))
+	if len(ats) > 100 {
+		ats = ats[:100]
+	}
+	return ats
+}
+func humanTime(t time.Time) string {
+	d := time.Now().Sub(t)
+	var ago string
+	switch {
+	case d > -time.Hour && d < time.Hour:
+		ago = strconv.FormatInt(d.Nanoseconds()/int64(time.Minute), 10) + "m ago"
+	case d > -24*time.Hour && d < 24*time.Hour:
+		ago = strconv.FormatInt(d.Nanoseconds()/int64(time.Hour), 10) + "h ago"
+	default:
+		ago = strconv.FormatInt(d.Nanoseconds()/int64(24*time.Hour), 10) + "d ago"
+	}
+	if ago == "0m ago" {
+		ago = ""
+	}
+	return ago
+}
+
+type Articles []*pb.Article
+
+func (a Articles) Len() int           { return len(a) }
+func (a Articles) Less(i, j int) bool { return a[i].Time > a[j].Time }
+func (a Articles) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
