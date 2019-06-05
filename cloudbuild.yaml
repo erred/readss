@@ -1,9 +1,16 @@
 steps:
-  - name: "gcr.io/cloud-builders/docker"
+  # name: gcr.io/$PROJECT_ID/protoc:latest
+  # args:
+  #   - -I:readss
+  #   - readss/readss.proto
+  #   - --js_out=import_style=commonjs:readss
+  #   - --grpc-web_out=import_style=commonjs,mode=grpcwebtext:readss
+  #   - --go_out=plugins=grpc:readss
+  - name: "gcr.io/kaniko-project/executor:latest"
+    dir: "$_IMG"
     args:
-      - "build"
-      - "-t"
-      - "gcr.io/$PROJECT_ID/readss:$SHORT_SHA"
-      - "."
-images:
-  - "gcr.io/$PROJECT_ID/readss:$SHORT_SHA"
+      - "--cache"
+      - "--context=/workspace/$_IMG"
+      - "--destination=gcr.io/$PROJECT_ID/readss-$_IMG:latest"
+substitutions:
+  _IMG: "server"
