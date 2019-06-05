@@ -114,14 +114,14 @@ func parseSubs(fn string) []Sub {
 
 func getArticles(subs []Sub) []*pb.Article {
 	var wg sync.WaitGroup
-	for i, _ := range subs {
+	for s, sub := range subs {
 		wg.Add(1)
-		go func(i int) {
+		go func(s int, sub Sub) {
 			defer wg.Done()
 
-			feed, err := gofeed.NewParser().ParseURL(subs[i].URL)
+			feed, err := gofeed.NewParser().ParseURL(sub.URL)
 			if err != nil {
-				log.Printf("getSubs get feed %v: %v\n", subs[i].Name, err)
+				log.Printf("getSubs get feed %v: %v\n", sub.Name, err)
 				return
 			}
 			ats := make([]*pb.Article, len(feed.Items))
@@ -133,14 +133,14 @@ func getArticles(subs []Sub) []*pb.Article {
 				ats[i] = &pb.Article{
 					Title:   it.Title,
 					Url:     it.Link,
-					Source:  subs[i].Name,
+					Source:  sub.Name,
 					Time:    ts.Format("2006-01-02 15:04"),
 					Reltime: humanTime(*ts),
 				}
 			}
 
-			subs[i].Articles = ats
-		}(i)
+			subs[s].Articles = ats
+		}(s, sub)
 	}
 	wg.Wait()
 
