@@ -32,7 +32,7 @@ func main() {
 		b, _ := httputil.DumpRequest(r, true)
 		log.Println(string(b))
 
-		w.Header().Set("Access-Control-Allow-Headers", "Origin, Content-Type, X-Auth-Token")
+		w.Header().Set("Access-Control-Allow-Headers", "origin, content-type, x-auth-token, x-grpc-web, x-user-agent")
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PATCH, PUT, DELETE, OPTIONS")
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		if r.Method == "OPTIONS" {
