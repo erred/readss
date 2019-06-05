@@ -2,7 +2,9 @@ package main
 
 import (
 	"context"
+	"log"
 	"net/http"
+	"net/http/httputil"
 
 	grpcweb "github.com/seankhliao/go-grpcweb"
 	"google.golang.org/grpc"
@@ -27,8 +29,11 @@ func main() {
 	//    method: OPTIONS
 	//    response: 200
 	h := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Headers", "*")
-		w.Header().Set("Access-Control-Allow-Methods", "*")
+		b, _ := httputil.DumpRequest(r, true)
+		log.Println(string(b))
+
+		w.Header().Set("Access-Control-Allow-Headers", "Origin, Content-Type, X-Auth-Token")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PATCH, PUT, DELETE, OPTIONS")
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		if r.Method == "OPTIONS" {
 			w.WriteHeader(http.StatusOK)
