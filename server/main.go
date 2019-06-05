@@ -18,7 +18,6 @@ func main() {
 
 	// wrap grpc handler in grpc-web handler
 	handler := grpcweb.New(svr)
-	// http.ListenAndServe(":8090", handler)
 
 	// OPTIONAL:
 	// handle cors if necessary:
@@ -32,9 +31,9 @@ func main() {
 		b, _ := httputil.DumpRequest(r, true)
 		log.Println(string(b))
 
-		w.Header().Set("Access-Control-Allow-Headers", "origin, content-type, x-auth-token, x-grpc-web, x-user-agent")
-		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PATCH, PUT, DELETE, OPTIONS")
-		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Headers", "origin, content-type, x-grpc-web, x-user-agent")
+		w.Header().Set("Access-Control-Allow-Methods", "OPTIONS, POST")
+		w.Header().Set("Access-Control-Allow-Origin", "https://seankhliao.com, http://localhost:8080")
 		if r.Method == "OPTIONS" {
 			w.WriteHeader(http.StatusOK)
 			return
