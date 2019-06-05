@@ -7,9 +7,8 @@ steps:
   #   - --grpc-web_out=import_style=commonjs,mode=grpcwebtext:readss
   #   - --go_out=plugins=grpc:readss
   - name: "gcr.io/kaniko-project/executor:latest"
-    dir: "$_IMG"
     args:
       - "--cache"
-      - "--destination=gcr.io/$PROJECT_ID/readss-$_IMG:latest"
+      - "--destination=gcr.io/$PROJECT_ID/$_IMG:latest"
 substitutions:
-  _IMG: "server"
+  _IMG: "readss-server"
