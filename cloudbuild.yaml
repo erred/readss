@@ -10,7 +10,6 @@ steps:
     dir: "$_IMG"
     args:
       - "--cache"
-      - "--context=/workspace/$_IMG"
       - "--destination=gcr.io/$PROJECT_ID/readss-$_IMG:latest"
 substitutions:
   _IMG: "server"
