@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/csv"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -19,7 +20,7 @@ import (
 )
 
 func main() {
-	svr := NewServer("subs.csv", 30*time.Minute)
+	svr := NewServer("/etc/readss/subs.csv", 30*time.Minute)
 	gsvr := grpc.NewServer()
 
 	// register svr with gsvr
@@ -37,6 +38,8 @@ func main() {
 	//    method: OPTIONS
 	//    response: 200
 	h := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		t := time.Now()
+		defer fmt.Println("request took ", time.Now().Sub(t).Nanoseconds(), "ns")
 		w.Header().Set("Access-Control-Expose-Headers", "grpc-status, grpc-message")
 		w.Header().Set("Access-Control-Allow-Headers", "origin, content-type, x-grpc-web, x-user-agent")
 		w.Header().Set("Access-Control-Allow-Methods", "OPTIONS, POST")

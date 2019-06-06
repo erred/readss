@@ -10,6 +10,5 @@ FROM scratch
 
 COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=build /app/readss-server /bin/readss-server
-COPY subs.csv .
 
 ENTRYPOINT ["/bin/readss-server"]
