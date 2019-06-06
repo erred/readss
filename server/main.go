@@ -39,7 +39,8 @@ func main() {
 	//    response: 200
 	h := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		t := time.Now()
-		defer fmt.Println("request took ", time.Now().Sub(t).Nanoseconds(), "ns")
+		defer func() { fmt.Println("request took ", time.Now().Sub(t).Nanoseconds(), "ns") }()
+		w.Header().Set("Cache-Control", "max-age=600")
 		w.Header().Set("Access-Control-Expose-Headers", "grpc-status, grpc-message")
 		w.Header().Set("Access-Control-Allow-Headers", "origin, content-type, x-grpc-web, x-user-agent")
 		w.Header().Set("Access-Control-Allow-Methods", "OPTIONS, POST")
