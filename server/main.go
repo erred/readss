@@ -135,7 +135,7 @@ func getArticles(subs []Sub) []*pb.Article {
 				ats[i] = &pb.Article{
 					Title:   it.Title,
 					Url:     it.Link,
-					Source:  sub.Name,
+					Source:  feed.Title,
 					Time:    ts.Format("2006-01-02 15:04"),
 					Reltime: humanTime(*ts),
 				}
