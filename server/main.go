@@ -54,6 +54,9 @@ func init() {
 
 func allowOrigin(o string) bool {
 	_, ok := Origins[o]
+	if Debug {
+		log.Printf("origin filter %v allowed: %v\n", o, ok)
+	}
 	return ok
 }
 
@@ -63,6 +66,10 @@ func main() {
 	pb.RegisterListerServer(gsvr, svr)
 	wsvr := grpcweb.WrapServer(gsvr, grpcweb.WithOriginFunc(allowOrigin))
 
+	if Debug {
+		log.Printf("read config at %v, ticking at %v\n", Config, Tick)
+		log.Printf("starting on %v allowing origins %v\n", Port, Origins)
+	}
 	http.ListenAndServe(Port, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		wsvr.ServeHTTP(w, r)
 	}))
@@ -127,6 +134,10 @@ func parseSubs(fn string) []Sub {
 }
 
 func getArticles(subs []Sub) []*pb.Article {
+	if Debug {
+		log.Printf("starting getArticles")
+		defer log.Printf("finsihed getArticles")
+	}
 	var wg sync.WaitGroup
 	for s, sub := range subs {
 		wg.Add(1)
