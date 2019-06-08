@@ -3,57 +3,69 @@ package main
 import (
 	"context"
 	"encoding/csv"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"sort"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 
+	"github.com/improbable-eng/grpc-web/go/grpcweb"
 	"github.com/mmcdole/gofeed"
-	grpcweb "github.com/seankhliao/go-grpcweb"
 	"google.golang.org/grpc"
 
 	pb "github.com/seankhliao/readss/readss"
 )
 
+var (
+	Port    = os.Getenv("PORT")
+	Debug   bool
+	Origins map[string]struct{}
+	Config  = os.Getenv("CONFIG")
+	Tick    time.Duration
+)
+
+func init() {
+	if Port == "" {
+		Port = ":8090"
+	} else if Port[0] != ':' {
+		Port = ":" + Port
+	}
+	if os.Getenv("DEBUG") == "1" {
+		Debug = true
+	}
+
+	Origins = make(map[string]struct{})
+	for _, o := range strings.Split(os.Getenv("ORIGINS"), ",") {
+		Origins[strings.TrimSpace(o)] = struct{}{}
+	}
+
+	if Config == "" {
+		Config = "/etc/readss/subs.csv"
+	}
+	if d, err := time.ParseDuration(os.Getenv("TICK")); err != nil {
+		Tick = d
+	} else {
+		Tick = 30 * time.Minute
+	}
+}
+
+func allowOrigin(o string) bool {
+	_, ok := Origins[o]
+	return ok
+}
+
 func main() {
-	svr := NewServer("/etc/readss/subs.csv", 30*time.Minute)
+	svr := NewServer(Config, Tick)
 	gsvr := grpc.NewServer()
-
-	// register svr with gsvr
 	pb.RegisterListerServer(gsvr, svr)
+	wsvr := grpcweb.WrapServer(gsvr, grpcweb.WithOriginFunc(allowOrigin))
 
-	// wrap grpc handler in grpc-web handler
-	handler := grpcweb.New(gsvr)
-
-	// OPTIONAL:
-	// handle cors if necessary:
-	//  Headers:
-	//    Access-Control-Allow-Origin
-	//    Access-Control-Allow-Headers
-	//  Request:
-	//    method: OPTIONS
-	//    response: 200
-	h := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		t := time.Now()
-		defer func() { fmt.Println("request took ", time.Now().Sub(t).Nanoseconds(), "ns") }()
-		w.Header().Set("Cache-Control", "max-age=600")
-		w.Header().Set("Access-Control-Expose-Headers", "grpc-status, grpc-message")
-		w.Header().Set("Access-Control-Allow-Headers", "origin, content-type, x-grpc-web, x-user-agent")
-		w.Header().Set("Access-Control-Allow-Methods", "OPTIONS, POST")
-		// only a single origin is allowed
-		w.Header().Set("Access-Control-Allow-Origin", "https://seankhliao.com")
-		if r.Method == "OPTIONS" {
-			w.WriteHeader(http.StatusOK)
-			return
-		}
-		handler.ServeHTTP(w, r)
-	})
-	http.ListenAndServe(":8090", h)
-
+	http.ListenAndServe(Port, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		wsvr.ServeHTTP(w, r)
+	}))
 }
 
 type Server struct {
