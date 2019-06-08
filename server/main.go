@@ -77,7 +77,7 @@ func main() {
 
 	if Debug {
 		log.Printf("read config at %v, ticking at %v\n", Config, Tick)
-		log.Printf("starting on %v allowing origins %v\n", Port, Origins)
+		log.Printf("starting on %v\nallowing headers: %v\nallowing origins: %v\n", Port, Headers, Origins)
 	}
 	http.ListenAndServe(Port, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Cache-Control", "max-age=600")
