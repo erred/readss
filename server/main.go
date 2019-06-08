@@ -56,7 +56,6 @@ func init() {
 	for i, h := range Headers {
 		Headers[i] = strings.TrimSpace(h)
 	}
-
 }
 
 func allowOrigin(o string) bool {
