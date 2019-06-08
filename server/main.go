@@ -46,9 +46,9 @@ func init() {
 		Config = "/etc/readss/subs.csv"
 	}
 	if d, err := time.ParseDuration(os.Getenv("TICK")); err != nil {
-		Tick = d
-	} else {
 		Tick = 30 * time.Minute
+	} else {
+		Tick = d
 	}
 }
 
