@@ -20,10 +20,11 @@ import (
 )
 
 var (
-	Port    = os.Getenv("PORT")
-	Debug   bool
-	Origins map[string]struct{}
 	Config  = os.Getenv("CONFIG")
+	Debug   bool
+	Headers []string
+	Origins map[string]struct{}
+	Port    = os.Getenv("PORT")
 	Tick    time.Duration
 )
 
@@ -45,11 +46,17 @@ func init() {
 	if Config == "" {
 		Config = "/etc/readss/subs.csv"
 	}
+
 	if d, err := time.ParseDuration(os.Getenv("TICK")); err != nil {
 		Tick = 30 * time.Minute
 	} else {
 		Tick = d
 	}
+	Headers = strings.Split(os.Getenv("HEADERS"), ",")
+	for i, h := range Headers {
+		Headers[i] = strings.TrimSpace(h)
+	}
+
 }
 
 func allowOrigin(o string) bool {
@@ -64,7 +71,10 @@ func main() {
 	svr := NewServer(Config, Tick)
 	gsvr := grpc.NewServer()
 	pb.RegisterListerServer(gsvr, svr)
-	wsvr := grpcweb.WrapServer(gsvr, grpcweb.WithOriginFunc(allowOrigin))
+	wsvr := grpcweb.WrapServer(gsvr,
+		grpcweb.WithOriginFunc(allowOrigin),
+		grpcweb.WithAllowedRequestHeaders(Headers),
+	)
 
 	if Debug {
 		log.Printf("read config at %v, ticking at %v\n", Config, Tick)
