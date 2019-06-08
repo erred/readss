@@ -82,8 +82,6 @@ func main() {
 	http.ListenAndServe(Port, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Cache-Control", "max-age=600")
 		wsvr.ServeHTTP(w, r)
-		w.Header().Add("Access-Control-Expose-Headers", "grpc-status")
-		w.Header().Add("Access-Control-Expose-Headers", "grpc-message")
 	}))
 }
 
