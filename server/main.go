@@ -81,6 +81,8 @@ func main() {
 		log.Printf("starting on %v allowing origins %v\n", Port, Origins)
 	}
 	http.ListenAndServe(Port, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Cache-Control", "max-age=600")
+		w.Header().Set("Access-Control-Expose-Headers", "grpc-status, grpc-message")
 		wsvr.ServeHTTP(w, r)
 	}))
 }
