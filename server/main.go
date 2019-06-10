@@ -16,7 +16,7 @@ import (
 	"github.com/mmcdole/gofeed"
 	"google.golang.org/grpc"
 
-	pb "github.com/seankhliao/readss/readss"
+	"github.com/seankhliao/readss/readss"
 )
 
 var (
@@ -73,7 +73,7 @@ func allowOrigin(o string) bool {
 func main() {
 	svr := NewServer(Config, Tick)
 	gsvr := grpc.NewServer()
-	pb.RegisterListerServer(gsvr, svr)
+	readss.RegisterListerServer(gsvr, svr)
 	wsvr := grpcweb.WrapServer(gsvr,
 		grpcweb.WithOriginFunc(allowOrigin),
 		grpcweb.WithAllowedRequestHeaders(Headers),
@@ -91,7 +91,7 @@ func main() {
 }
 
 type Server struct {
-	ats  []*pb.Article
+	ats  []*readss.Article
 	fn   string
 	tick time.Duration
 }
@@ -105,8 +105,8 @@ func NewServer(fn string, tick time.Duration) *Server {
 	return svr
 }
 
-func (s *Server) List(context.Context, *pb.ListRequest) (*pb.ListReply, error) {
-	return &pb.ListReply{
+func (s *Server) List(context.Context, *readss.ListRequest) (*readss.ListReply, error) {
+	return &readss.ListReply{
 		Articles: s.ats,
 	}, nil
 }
@@ -121,7 +121,7 @@ func (s *Server) updater() {
 type Sub struct {
 	Name     string
 	URL      string
-	Articles []*pb.Article
+	Articles []*readss.Article
 }
 
 func parseSubs(fn string) []Sub {
@@ -148,7 +148,7 @@ func parseSubs(fn string) []Sub {
 	return subs
 }
 
-func getArticles(subs []Sub) []*pb.Article {
+func getArticles(subs []Sub) []*readss.Article {
 	if Debug {
 		log.Printf("starting getArticles")
 		defer log.Printf("finsihed getArticles")
@@ -164,13 +164,13 @@ func getArticles(subs []Sub) []*pb.Article {
 				log.Printf("getSubs get feed %v: %v\n", sub.Name, err)
 				return
 			}
-			ats := make([]*pb.Article, len(feed.Items))
+			ats := make([]*readss.Article, len(feed.Items))
 			for i, it := range feed.Items {
 				ts := it.PublishedParsed
 				if it.UpdatedParsed != nil {
 					ts = it.UpdatedParsed
 				}
-				ats[i] = &pb.Article{
+				ats[i] = &readss.Article{
 					Title:   it.Title,
 					Url:     it.Link,
 					Source:  feed.Title,
@@ -184,7 +184,7 @@ func getArticles(subs []Sub) []*pb.Article {
 	}
 	wg.Wait()
 
-	var ats []*pb.Article
+	var ats []*readss.Article
 	for _, s := range subs {
 		ats = append(ats, s.Articles...)
 	}
@@ -211,7 +211,7 @@ func humanTime(t time.Time) string {
 	return ago
 }
 
-type Articles []*pb.Article
+type Articles []*readss.Article
 
 func (a Articles) Len() int           { return len(a) }
 func (a Articles) Less(i, j int) bool { return a[i].Time > a[j].Time }
