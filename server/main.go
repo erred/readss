@@ -20,41 +20,45 @@ import (
 )
 
 var (
-	Config  = os.Getenv("CONFIG")
-	Debug   bool
-	Headers []string
-	Origins map[string]struct{}
+	// grpc stuff
+	Debug   = false
+	Headers = strings.Split(os.Getenv("HEADERS"), ",")
+	Origins = make(map[string]struct{})
 	Port    = os.Getenv("PORT")
-	Tick    time.Duration
+
+	// service stuff
+	Config = os.Getenv("CONFIG")
+	Tick   = 30 * time.Minute
 )
 
 func init() {
-	if Port == "" {
-		Port = ":8090"
-	} else if Port[0] != ':' {
-		Port = ":" + Port
-	}
+	// grpc stuff
 	if os.Getenv("DEBUG") == "1" {
 		Debug = true
 	}
 
-	Origins = make(map[string]struct{})
+	for i, h := range Headers {
+		Headers[i] = strings.TrimSpace(h)
+	}
+
 	for _, o := range strings.Split(os.Getenv("ORIGINS"), ",") {
 		Origins[strings.TrimSpace(o)] = struct{}{}
 	}
 
+	if Port == "" {
+		Port = ":8090"
+	}
+	if Port[0] != ':' {
+		Port = ":" + Port
+	}
+
+	// service stuff
 	if Config == "" {
 		Config = "/etc/readss/subs.csv"
 	}
 
-	if d, err := time.ParseDuration(os.Getenv("TICK")); err != nil {
-		Tick = 30 * time.Minute
-	} else {
+	if d, err := time.ParseDuration(os.Getenv("TICK")); err == nil {
 		Tick = d
-	}
-	Headers = strings.Split(os.Getenv("HEADERS"), ",")
-	for i, h := range Headers {
-		Headers[i] = strings.TrimSpace(h)
 	}
 }
 
@@ -77,7 +81,8 @@ func main() {
 
 	if Debug {
 		log.Printf("read config at %v, ticking at %v\n", Config, Tick)
-		log.Printf("starting on %v\nallowing headers: %v\nallowing origins: %v\n", Port, Headers, Origins)
+		log.Printf("starting on %v\nallowing headers: %v\nallowing origins: %v\n",
+			Port, Headers, Origins)
 	}
 	http.ListenAndServe(Port, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Cache-Control", "max-age=600")
