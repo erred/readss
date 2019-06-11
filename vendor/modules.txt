@@ -22,19 +22,19 @@ github.com/mmcdole/gofeed/rss
 github.com/mmcdole/goxpp
 # github.com/rs/cors v1.6.0
 github.com/rs/cors
-# golang.org/x/net v0.0.0-20190311183353-d8887717615a
-golang.org/x/net/trace
+# golang.org/x/net v0.0.0-20190607181551-461777fb6f67
 golang.org/x/net/http2
-golang.org/x/net/internal/timeseries
-golang.org/x/net/http2/hpack
+golang.org/x/net/trace
 golang.org/x/net/http/httpguts
+golang.org/x/net/http2/hpack
 golang.org/x/net/idna
 golang.org/x/net/html/charset
+golang.org/x/net/internal/timeseries
 golang.org/x/net/html
 golang.org/x/net/html/atom
-# golang.org/x/sys v0.0.0-20190215142949-d0b11bdaac8a
+# golang.org/x/sys v0.0.0-20190610200419-93c9922d18ae
 golang.org/x/sys/unix
-# golang.org/x/text v0.3.0
+# golang.org/x/text v0.3.2
 golang.org/x/text/transform
 golang.org/x/text/secure/bidirule
 golang.org/x/text/unicode/bidi
@@ -52,20 +52,22 @@ golang.org/x/text/encoding/unicode
 golang.org/x/text/language
 golang.org/x/text/internal/utf8internal
 golang.org/x/text/runes
+golang.org/x/text/internal/language
+golang.org/x/text/internal/language/compact
 golang.org/x/text/internal/tag
-# google.golang.org/genproto v0.0.0-20180817151627-c66870c02cf8
+# google.golang.org/genproto v0.0.0-20190605220351-eb0b1bdb6ae6
 google.golang.org/genproto/googleapis/rpc/status
-# google.golang.org/grpc v1.21.0
+# google.golang.org/grpc v1.21.1
 google.golang.org/grpc
 google.golang.org/grpc/codes
 google.golang.org/grpc/status
+google.golang.org/grpc/grpclog
 google.golang.org/grpc/balancer
 google.golang.org/grpc/balancer/roundrobin
 google.golang.org/grpc/connectivity
 google.golang.org/grpc/credentials
 google.golang.org/grpc/encoding
 google.golang.org/grpc/encoding/proto
-google.golang.org/grpc/grpclog
 google.golang.org/grpc/internal
 google.golang.org/grpc/internal/backoff
 google.golang.org/grpc/internal/balancerload
