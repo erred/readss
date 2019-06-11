@@ -173,7 +173,7 @@ func getArticles(subs []Sub) []*readss.Article {
 				ats[i] = &readss.Article{
 					Title:   it.Title,
 					Url:     it.Link,
-					Source:  feed.Title,
+					Source:  sub.Name,
 					Time:    ts.Format("2006-01-02 15:04"),
 					Reltime: humanTime(*ts),
 				}
