@@ -10,11 +10,11 @@ steps:
     args:
       - build
       - --cache-from
-      - $_IMG
+      - $$_IMG
       - -t
-      - $_IMG
+      - $$_IMG
       - .
 images:
-  - $_IMG
+  - $$_IMG
 substitutions:
   _IMG: gcr.io/$PROJECT_ID/readss-server:latest
