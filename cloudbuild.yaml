@@ -21,7 +21,7 @@ steps:
       - set
       - image
       - deploy
-      - readss
+      - $_IMG
       - "*=gcr.io/$PROJECT_ID/$_IMG:$SHORT_SHA"
     env:
       - "CLOUDSDK_COMPUTE_ZONE=us-central1-a"
@@ -30,4 +30,4 @@ images:
   - gcr.io/$PROJECT_ID/$_IMG:latest
   - gcr.io/$PROJECT_ID/$_IMG:$SHORT_SHA
 substitutions:
-  _IMG: readss-server
+  _IMG: readss
