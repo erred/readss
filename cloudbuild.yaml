@@ -22,10 +22,10 @@ steps:
       - image
       - deploy
       - readss
-      - *=gcr.io/$PROJECT_ID/$_IMG:$SHORT_SHA
+      - "*=gcr.io/$PROJECT_ID/$_IMG:$SHORT_SHA"
     env:
-    - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
-    - 'CLOUDSDK_CONTAINER_CLUSTER=cluster12'
+      - "CLOUDSDK_COMPUTE_ZONE=us-central1-a"
+      - "CLOUDSDK_CONTAINER_CLUSTER=cluster12"
 images:
   - gcr.io/$PROJECT_ID/$_IMG:latest
   - gcr.io/$PROJECT_ID/$_IMG:$SHORT_SHA
