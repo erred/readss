@@ -22,7 +22,7 @@ import (
 var (
 	// grpc stuff
 	Debug   = false
-	Headers = strings.Split(os.Getenv("HEADERS"), ",")
+	Headers = []string{"*"}
 	Origins = make(map[string]struct{})
 	Port    = os.Getenv("PORT")
 
@@ -37,16 +37,12 @@ func init() {
 		Debug = true
 	}
 
-	for i, h := range Headers {
-		Headers[i] = strings.TrimSpace(h)
-	}
-
 	for _, o := range strings.Split(os.Getenv("ORIGINS"), ",") {
 		Origins[strings.TrimSpace(o)] = struct{}{}
 	}
 
 	if Port == "" {
-		Port = ":8090"
+		Port = ":8080"
 	}
 	if Port[0] != ':' {
 		Port = ":" + Port
