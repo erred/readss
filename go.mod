@@ -1,4 +1,4 @@
-module github.com/seankhliao/readss
+module seankhliao.com/readss
 
 go 1.12
 

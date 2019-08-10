@@ -16,7 +16,7 @@ import (
 	"github.com/mmcdole/gofeed"
 	"google.golang.org/grpc"
 
-	"github.com/seankhliao/readss/readss"
+	"seankhliao.com/readss/readss"
 )
 
 var (
