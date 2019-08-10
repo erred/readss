@@ -2,7 +2,7 @@
 github.com/PuerkitoBio/goquery
 # github.com/andybalholm/cascadia v1.0.0
 github.com/andybalholm/cascadia
-# github.com/golang/protobuf v1.3.1
+# github.com/golang/protobuf v1.3.2
 github.com/golang/protobuf/proto
 github.com/golang/protobuf/ptypes
 github.com/golang/protobuf/ptypes/any
@@ -10,7 +10,7 @@ github.com/golang/protobuf/ptypes/duration
 github.com/golang/protobuf/ptypes/timestamp
 # github.com/gorilla/websocket v1.4.0
 github.com/gorilla/websocket
-# github.com/improbable-eng/grpc-web v0.9.6
+# github.com/improbable-eng/grpc-web v0.11.0
 github.com/improbable-eng/grpc-web/go/grpcweb
 # github.com/mmcdole/gofeed v1.0.0-beta2
 github.com/mmcdole/gofeed
@@ -20,9 +20,9 @@ github.com/mmcdole/gofeed/internal/shared
 github.com/mmcdole/gofeed/rss
 # github.com/mmcdole/goxpp v0.0.0-20181012175147-0068e33feabf
 github.com/mmcdole/goxpp
-# github.com/rs/cors v1.6.0
+# github.com/rs/cors v1.7.0
 github.com/rs/cors
-# golang.org/x/net v0.0.0-20190607181551-461777fb6f67
+# golang.org/x/net v0.0.0-20190724013045-ca1201d0de80
 golang.org/x/net/http2
 golang.org/x/net/trace
 golang.org/x/net/http/httpguts
@@ -32,7 +32,7 @@ golang.org/x/net/html/charset
 golang.org/x/net/internal/timeseries
 golang.org/x/net/html
 golang.org/x/net/html/atom
-# golang.org/x/sys v0.0.0-20190610200419-93c9922d18ae
+# golang.org/x/sys v0.0.0-20190804053845-51ab0e2deafa
 golang.org/x/sys/unix
 # golang.org/x/text v0.3.2
 golang.org/x/text/transform
@@ -55,9 +55,9 @@ golang.org/x/text/runes
 golang.org/x/text/internal/language
 golang.org/x/text/internal/language/compact
 golang.org/x/text/internal/tag
-# google.golang.org/genproto v0.0.0-20190605220351-eb0b1bdb6ae6
+# google.golang.org/genproto v0.0.0-20190801165951-fa694d86fc64
 google.golang.org/genproto/googleapis/rpc/status
-# google.golang.org/grpc v1.21.1
+# google.golang.org/grpc v1.22.1
 google.golang.org/grpc
 google.golang.org/grpc/codes
 google.golang.org/grpc/status
@@ -84,6 +84,7 @@ google.golang.org/grpc/peer
 google.golang.org/grpc/resolver
 google.golang.org/grpc/resolver/dns
 google.golang.org/grpc/resolver/passthrough
+google.golang.org/grpc/serviceconfig
 google.golang.org/grpc/stats
 google.golang.org/grpc/tap
 google.golang.org/grpc/balancer/base
